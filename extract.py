@@ -243,6 +243,9 @@ while command != "EXIT":
                     json.dump(Subjects, file)
                 if linearSearch(Database["semesters"], thisSem):
                     print("NEW SEMESTER ADDED")
+                    Database["semesters"].reverse()
+                    Database["semesters"].append(thisSem)
+                    Database["semesters"].reverse()
                     with open(database, 'w') as file:
                         json.dump(Database, file)
                 print("Completed")
