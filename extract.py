@@ -338,12 +338,10 @@ while command != "EXIT":
                         for key, value in course.items():
                             if key == "Subject":
                                 file.write("\"" + value)
-                            elif key == "Description":
-                                desc = value.replace("\"","\"\"")
+                            else:
+                                desc = str(value).replace("\"","\"\"")
                                 desc = desc.replace("\n", "")
                                 file.write(separator + desc)
-                            else:
-                                file.write(separator + str(value))
                         file.write("\"\n")
             
         elif cmdSections[0] == "IMPORTCSV":
