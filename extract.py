@@ -327,7 +327,10 @@ while command != "EXIT":
                 continue
             with open(CSV, 'w') as file:
                 for key in Subjects[0]["courses"][0]:
-                    file.write(key.upper() + ",")
+                    if key != "Offer In":
+                        file.write(key.upper() + ",")
+                    else:
+                        file.write(key.upper())
                 file.write("\n")
                 separator = "\",\""
                 for subject in Subjects:
@@ -351,7 +354,7 @@ while command != "EXIT":
             importCSVSubjects = []
             for line in file:
                 data = line[1: -2].split("\",\"")
-                if data[0] == "UBJECT,CODE,TITLE,CREDIT,ATTRIBUTE,EXCLUSIONSTR,PREREQUISITESTR,COREQUISITESTR,DESCRIPTION,COLISTWITHSTR,VECTOR,PREVIOUSCODE,OFFER IN":
+                if data[0] == "SUBJECT,CODE,TITLE,CREDIT,ATTRIBUTE,EXCLUSIONSTR,PREREQUISITESTR,COREQUISITESTR,DESCRIPTION,COLISTWITHSTR,VECTOR,PREVIOUSCODE,OFFER IN":
                     continue
                 subjectIndex = findSubject(importCSVSubjects, data[0])
 
