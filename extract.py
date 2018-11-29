@@ -198,7 +198,7 @@ while command != "EXIT":
                                         if courseData[j].find("4Y") != -1:
                                             s += courseData[j][courseData[j].find("("): courseData[j].find(")") + 1]
                                         j += 1
-                                    medium = ["[CA]", "[PU]", "[C]", "GEE"]
+                                    medium = ["[CA]", "[PU]", "[C]", "GEE", "[BLD]", "[ONL]"]
                                     for m in medium:
                                         if j >= len(courseData):
                                             break
