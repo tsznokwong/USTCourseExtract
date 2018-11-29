@@ -241,7 +241,7 @@ while command != "EXIT":
                 print("Retrieving %s --- 100.0%%" % subject)
                 with open(save, 'w') as file:
                     json.dump(Subjects, file)
-                if linearSearch(Database["semesters"], thisSem):
+                if linearSearch(Database["semesters"], thisSem) == -1:
                     print("NEW SEMESTER ADDED")
                     Database["semesters"].reverse()
                     Database["semesters"].append(thisSem)
