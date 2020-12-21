@@ -36,7 +36,9 @@ jobs:
           #   echo "fall\n" >> command
           # fi
           echo "exportcsv\nexit\n" >> command
+          cat command
           python3 extract.py < command
+          rm command
       - name: Commit files
         if: ${{ success() }}
         run: |
