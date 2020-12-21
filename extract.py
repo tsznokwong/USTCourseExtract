@@ -90,13 +90,26 @@ def standardize(text):
     return text
 # Standardize input END
 
+def getAvailableSemesters():
+    content = html.fromstring(requests.get(WebData).content)
+    semesters = content.xpath('//li[@class="term"]/div[@class="termselect"]/a/text()')
+    print("Available Semesters: " + ", ".join(semesters))
+    return semesters
+
 # Input semester
 def inputSemester():
+    semesters = getAvailableSemesters()
     while True:
         semester = input("Semester [Fall | Winter | Spring | Summer]: ")
         semester = standardize(semester)
         if linearSearch(Semesters, semester) != -1:
-            return semester
+            year = '16'
+            for title in semesters:
+                if title.find(semester.title()) != -1:
+                    year = title[2:4]
+            url = WebData + year + str(Semesters.index(semester) + 1) + '0/'
+            semester = year + semester
+            return semester, url
         print("Invalid Semester.")
 # Input semester END
 
@@ -126,6 +139,36 @@ def removeOptions(sections: []):
             sections.remove(section)
     return sections
 
+def exportCSV(subjects):
+    if len(subjects) == 0 or len(subjects[0]["courses"]) == 0:
+        print("Incomplete database. Please update database")
+        return
+    with open(CSV, 'w') as file:
+        for key in subjects[0]["courses"][0]:
+            if key != "Offer In":
+                file.write(key.upper() + ",")
+            else:
+                file.write(key.upper())
+        file.write("\n")
+        separator = "\",\""
+        for subject in subjects:
+            for course in subject["courses"]:
+                for key, value in course.items():
+                    if key == "Subject":
+                        file.write("\"" + value)
+                    else:
+                        desc = str(value).replace("\"","\"\"")
+                        desc = desc.replace("\n", "")
+                        file.write(separator + desc)
+                file.write("\"\n")
+
+def printHelp():
+    print("print (SUBJECTCODE) (COURSECODE) (all) (subject) (-l) (-s) (-c)...")
+    print("printsem <Semester> (-l) (-s) (-c) ...")
+    print("update <Semester>")
+    print("exportcsv ")
+    # print("importcsv")
+
 # Retrieve database
 if Path(save).exists():
     with open(save, 'r') as file:
@@ -141,19 +184,9 @@ while command != "EXIT":
         cmdSections = command.split(" ")
         if cmdSections[0] == "UPDATE":
 #            UPDATE COMMAND
-            Class = requests.get(WebData)
-            ClassTree = html.fromstring(Class.content)
-            semesterAvailable = ClassTree.xpath('//li[@class="term"]/div[@class="termselect"]/a/text()')
-    
-            sem = inputSemester()
-            year = '16'
-            for title in semesterAvailable:
-                if title.find(sem.title()) != -1:
-                    year = title[2:4]
-            extractWebData = WebData + year + str(Semesters.index(sem) + 1) + '0/'
-            thisSem = year + sem
+            thisSem, semesterURL = inputSemester()
             try:
-                Class = requests.get(extractWebData)
+                Class = requests.get(semesterURL)
             except requests.ConnectionError as e:
                 print("Connection Error. Make sure you are connected to Internet. Technical Details given below.\n")
                 print(str(e))
@@ -322,27 +355,7 @@ while command != "EXIT":
 #            Export CSV
 #            print("EXPORTCSV is banned now.")
 #            continue
-            if len(Subjects) == 0 or len(Subjects[0]["courses"]) == 0:
-                print("Incomplete database. Please update database")
-                continue
-            with open(CSV, 'w') as file:
-                for key in Subjects[0]["courses"][0]:
-                    if key != "Offer In":
-                        file.write(key.upper() + ",")
-                    else:
-                        file.write(key.upper())
-                file.write("\n")
-                separator = "\",\""
-                for subject in Subjects:
-                    for course in subject["courses"]:
-                        for key, value in course.items():
-                            if key == "Subject":
-                                file.write("\"" + value)
-                            else:
-                                desc = str(value).replace("\"","\"\"")
-                                desc = desc.replace("\n", "")
-                                file.write(separator + desc)
-                        file.write("\"\n")
+            exportCSV(Subjects)
             
         elif cmdSections[0] == "IMPORTCSV":
 #            FAULTY
@@ -378,11 +391,7 @@ while command != "EXIT":
                 json.dump(importCSVSubjects, file)
 
         elif cmdSections[0] == "HELP":
-            print("print (SUBJECTCODE) (COURSECODE) (all) (subject) (-l) (-s) (-c)...")
-            print("printsem <Semester> (-l) (-s) (-c) ...")
-            print("update <Semester>")
-            print("exportcsv ")
-            print("importcsv")
+            printHelp()
 
         elif command == "TEST":
             print("TESTING SECTION")
