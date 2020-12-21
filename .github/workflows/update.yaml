@@ -21,6 +21,7 @@ jobs:
         env:
           MONTH: "${{ steps.current-time.outputs.month }}"
         run: |
+          pip3 install -r requirements.txt
           echo "update\n" >> command
           # if [ "$MONTH" = "1" ]; then
             echo "winter\n" >> command
@@ -35,6 +36,7 @@ jobs:
           #   echo "fall\n" >> command
           # fi
           echo "exportcsv\nexit\n" >> command
+          python3 extract.py < command
       - name: Commit files
         if: ${{ success() }}
         run: |
