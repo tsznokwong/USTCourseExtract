@@ -22,20 +22,20 @@ jobs:
           MONTH: "${{ steps.current-time.outputs.month }}"
         run: |
           pip3 install -r requirements.txt
-          echo "update\n" >> command
+          echo $"update\n" >> command
           # if [ "$MONTH" = "1" ]; then
-            echo "winter\n" >> command
+            echo $"winter\n" >> command
           # fi
           # if [ "$MONTH" = "2" ]; then
-          #   echo "spring\n" >> command
+          #   echo $"spring\n" >> command
           # fi
           # if [ "$MONTH" = "6" ]; then
-          #   echo "summer\n" >> command
+          #   echo $"summer\n" >> command
           # fi
           # if [ "$MONTH" = "9" ]; then
-          #   echo "fall\n" >> command
+          #   echo $"fall\n" >> command
           # fi
-          echo "exportcsv\nexit\n" >> command
+          echo $"exportcsv\nexit\n" >> command
           cat command
           python3 extract.py < command
           rm command
