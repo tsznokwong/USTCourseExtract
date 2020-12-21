@@ -1,11 +1,11 @@
 name: Update
 
 on:
-  push:
-    branches:
-      - master
-  # schedule:
-  #   - cron: '0 0 1 1,2,6,9 *'
+  # push:
+  #   branches:
+  #     - master
+  schedule:
+    - cron: "0 0 1 1,2,6,9 *"
 
 jobs:
   update:
@@ -23,18 +23,18 @@ jobs:
         run: |
           pip3 install -r requirements.txt
           printf "update\n" >> command
-          # if [ "$MONTH" = "1" ]; then
+          if [ "$MONTH" = "1" ]; then
             printf "winter\n" >> command
-          # fi
-          # if [ "$MONTH" = "2" ]; then
-          #   printf "spring\n" >> command
-          # fi
-          # if [ "$MONTH" = "6" ]; then
-          #   printf "summer\n" >> command
-          # fi
-          # if [ "$MONTH" = "9" ]; then
-          #   printf "fall\n" >> command
-          # fi
+          fi
+          if [ "$MONTH" = "2" ]; then
+            printf "spring\n" >> command
+          fi
+          if [ "$MONTH" = "6" ]; then
+            printf "summer\n" >> command
+          fi
+          if [ "$MONTH" = "9" ]; then
+            printf "fall\n" >> command
+          fi
           printf "exportcsv\nexit\n" >> command
           cat command
           python3 extract.py < command
