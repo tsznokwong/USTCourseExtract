@@ -25,7 +25,7 @@ jobs:
           MONTH: "${{ steps.current-time.outputs.month }}"
         run: |
           echo $MONTH
-          if ["$MONTH" = "12"]; then
+          if [ "$MONTH" = "12" ]; then
             echo "HERE"
           fi
       - name: Commit files
