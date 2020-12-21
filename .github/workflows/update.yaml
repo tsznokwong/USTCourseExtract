@@ -1,0 +1,45 @@
+name: Update
+
+on:
+  push:
+    branches:
+      - master
+  # schedule:
+  #   - cron: '0 0 1 1,2,6,9 *'
+
+jobs:
+  update:
+    name: Update
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get current time
+        uses: 1466587594/get-current-time@v2
+        id: current-time
+        # with:
+        #   format: YYYYMMDD-HH
+        #   utcOffset: "+08:00"
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Update
+        env:
+          MONTH: "${{ steps.current-time.outputs.month }}"
+        run: |
+          echo $MONTH
+          if [$MONTH = "12"]; then
+            echo "HERE"
+          fi
+      - name: Commit files
+        if: ${{ success() }}
+        run: |
+          if ! git diff-index --quiet HEAD --; then
+            git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git config --local user.name "github-actions[bot]"
+            git add .
+            git commit -m "chore: update semester information"
+          fi
+      - name: Push changes
+        if: ${{ success() }}
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
